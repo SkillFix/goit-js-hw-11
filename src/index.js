@@ -20,7 +20,7 @@ loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 onScroll();
 onToTopBtn();
 
-function onSearchForm(e) {
+async function onSearchForm(e) {
   e.preventDefault();
   window.scrollTo({ top: 0 });
   page = 1;
@@ -33,43 +33,44 @@ function onSearchForm(e) {
     return;
   }
 
-  fetchImages(query, page, perPage)
-    .then(({ data }) => {
-      if (data.totalHits === 0) {
-        alertNoImagesFound();
-      } else {
-        renderGallery(data.hits);
-        simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-        alertImagesFound(data);
+  const { data } = await fetchImages(query, page, perPage);
+  try {
+    if (data.totalHits === 0) {
+      alertNoImagesFound();
+    } else {
+      renderGallery(data.hits);
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+      alertImagesFound(data);
 
-        if (data.totalHits > perPage) {
-          loadMoreBtn.classList.remove('is-hidden');
-        }
+      if (data.totalHits > perPage) {
+        loadMoreBtn.classList.remove('is-hidden');
       }
-    })
-    .catch(error => console.log(error))
-    .finally(() => {
-      searchForm.reset();
-    });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    searchForm.reset();
+  }
 }
 
-function onLoadMoreBtn() {
+async function onLoadMoreBtn() {
   page += 1;
   simpleLightBox.destroy();
 
-  fetchImages(query, page, perPage)
-    .then(({ data }) => {
-      renderGallery(data.hits);
-      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+  const { data } = await fetchImages(query, page, perPage);
+  try {
+    await renderGallery(data.hits);
+    simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
-      const totalPages = Math.ceil(data.totalHits / perPage);
+    const totalPages = Math.ceil(data.totalHits / perPage);
 
-      if (page > totalPages) {
-        loadMoreBtn.classList.add('is-hidden');
-        alertEndOfSearch();
-      }
-    })
-    .catch(error => console.log(error));
+    if (page > totalPages) {
+      loadMoreBtn.classList.add('is-hidden');
+      alertEndOfSearch();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function alertImagesFound(data) {
