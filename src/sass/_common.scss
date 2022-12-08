@@ -25,15 +25,6 @@ button {
   cursor: pointer;
 }
 
-.icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  stroke-width: 0;
-  stroke: currentColor;
-  fill: currentColor;
-}
-
 .search-container {
   width: 100%;
   padding-top: 10px;
@@ -56,11 +47,11 @@ button {
   // backdrop-filter: blur(50px);
   padding: 8px 10px;
   font: inherit;
-  &::placeholder {
-    color: #000;
-  }
 }
-
+.search-submit {
+  border-radius: 4px;
+  border: 1px solid rgb(5, 5, 5);
+}
 .search-form button {
   display: flex;
   margin-left: 10px;
