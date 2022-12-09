@@ -60,6 +60,7 @@ async function onLoadMoreBtn() {
   const { data } = await fetchImages(query, page, perPage);
   try {
     await renderGallery(data.hits);
+    await slowScroll(gallery);
     simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
     const totalPages = Math.ceil(data.totalHits / perPage);
@@ -71,6 +72,22 @@ async function onLoadMoreBtn() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function slowScroll(gallery) {
+  const { height: cardHeight } =
+    gallery.firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+  // const { height } = where.getBoundingClientRect();
+  // let scrollValue = 0;
+  // window.scrollBy({
+  //   top: (scrollValue += height),
+  //   behavior: 'smooth',
+  // });
 }
 
 function alertImagesFound(data) {
